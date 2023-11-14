@@ -1,0 +1,188 @@
+package com.example.employeeapp;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.app.AlertDialog.Builder;
+import android.database.sqlite.SQLiteDatabase;
+
+public class MainActivity extends AppCompatActivity {
+
+    EditText lastname, firstname, phone, email;
+    StringBuilder sb = new StringBuilder();
+    SQLiteDatabase db;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        lastname = findViewById(R.id.lastname);
+        firstname = findViewById(R.id.firstname);
+        phone = findViewById(R.id.phone);
+        email = findViewById(R.id.email);
+
+        db = openOrCreateDatabase("wright", MODE_PRIVATE, null);
+        db.execSQL("create table if not exists employee \n"+
+                "(\n"+
+                "EmpLname varchar (50), \n"+
+                "EmpFname varchar (50), \n"+
+                "EmpPhone varchar (25), \n"+
+                "EmpEmail varchar (25)\n"+
+                ");");
+/*
+        sb.append("Hello World!!\n");
+        sb.append("This is the student named Martin");
+        ShowMessage("Test Message", sb.toString());
+
+ */
+    }
+
+    public void Save(View v)
+    {
+        if(lastname.getText().toString().trim().length()==0 || firstname.getText().toString().trim().length()==0 ||
+                phone.getText().toString().trim().length()==0 || email.getText().toString().trim().length()==0)
+        {
+            sb.append("One of the fields is empty!!!\n");
+            sb.append("Enter the fields appropriately");
+            ShowMessage("ERROR!!", sb.toString());
+            return;
+        }
+        else {
+            db.execSQL("insert into employee values('"+lastname.getText().toString() + "', '" + firstname.getText().toString() + "', '" +
+                    phone.getText().toString() + "', '" +  email.getText().toString()+"');");
+            ShowMessage("CONGRATS!! The thing works now","you added a new Employee");
+            Cleartext();
+        }
+    }
+
+    public void Clear(View v)
+    {
+
+    }
+
+    public void ShowMessage(String title, String message)
+    {
+        Builder msg = new Builder(this);
+        msg.setCancelable(true);
+        msg.setTitle(title);
+        msg.setMessage(message);
+        msg.show();
+    }
+
+    public void Cleartext()
+    {
+        lastname.setText("");
+        firstname.setText("");
+        phone.setText("");
+        email.setText("");
+        lastname.requestFocus();
+    }
+}
+
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Employee Data Entry"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.13" />
+
+    <EditText
+        android:id="@+id/lastname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Enter Last Name"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.282" />
+
+    <EditText
+        android:id="@+id/firstname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Enter First Name"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.395" />
+
+    <EditText
+        android:id="@+id/phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Enter Phone Number"
+        android:inputType="phone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Enter Email Address"
+        android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.602" />
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:onClick="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.309"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.764" />
+
+    <Button
+        android:id="@+id/clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clear"
+        android:onClick="Cleartext"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.687"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.764" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
